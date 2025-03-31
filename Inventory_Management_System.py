@@ -121,6 +121,8 @@ elif choice == 3:
 
 elif choice == 4:
     print("Exiting program...")
-
+'''elif choice == 4:
+    print("Exiting program...")
+'''
 # Don't forget to close the connection when done
 inventory.close_connection()
