@@ -75,24 +75,51 @@ class Inventory():
                 print("Product ID: {}\nProduct Name: {}\nProduct Quantity: {}\nProduct Price: {}\nProduct Category: {} ".format(row[0],row[1],row[2],row[3],row[4]))
         else:
             print("No products in the Inventory")
-    
-    # Method to close the connection
+# Method to close the connection
     def close_connection(self):
         if self.connection:
             self.cursor.close()
             self.connection.close()
             print("Database connection closed.")
+    
+    #Class for updating products
+class Update_products():
+    # You should have only ONE __init__ method
+    def __init__(self, inventory_instance):
+        # Get the connection from the inventory instance
+        self.inventory = inventory_instance
+        self.connection = self.inventory.connection
+        self.cursor = self.inventory.cursor
+        
+            
+    def update_price(self, product_id, new_price):
+        query = "UPDATE products SET price = %s WHERE product_id = %s"
+        self.cursor.execute(query, (product_id,new_price))
+        self.connection.commit()
+        print(f"Product with ID '{product_id}' price updated to '${new_price}' successfully!")
+            
+    def update_quantity(self, product_id, new_quantity):
+        query = "UPDATE products SET quantity = %s WHERE product_id = %s"
+        self.cursor.execute(query, (product_id, new_quantity))
+        self.connection.commit()
+        print(f"Product with ID '{product_id}' quantity updated to '{new_quantity}' successfully!")
+            
+        
+        
+            
 
 # Menu display
 print("""
     1. Add product
     2. Remove product
-    3. List products
-    4. Exit
+    3. Update product
+    4. List product
+    5. Exit
 """)
 
 inventory = Inventory()
 choice = int(input("Enter your choice: "))
+updater = Update_products(inventory)
     
 if choice == 1:
     product_id = int(input("Enter product ID: "))
@@ -115,14 +142,33 @@ elif choice == 2:
     print("Product {} is removed\n".format(product_id))
     
 elif choice == 3:
+      
+    print("""
+          1. Update price
+          2. Update Quantity""")
+    
+    update_choice = int(input("Enter your choice: "))
+    
+    
+    if(update_choice == 1):
+        product_id = int(input("Enter product ID: "))
+        new_price = float(input("Enter the new price: "))
+        updater.update_price(product_id, new_price)
+        
+    elif (update_choice == 2):
+        product_id = int(input("Enter product ID: "))
+        new_quantity = int(input("Enter the new quantity: "))
+        updater.update_quantity(new_quantity, product_id)
+
+    
+    
+elif choice == 4:
     print("Listing products....")
     
     inventory.list_products()
 
-elif choice == 4:
+elif choice == 5:
     print("Exiting program...")
-'''elif choice == 4:
-    print("Exiting program...")
-'''
+
 # Don't forget to close the connection when done
 inventory.close_connection()
