@@ -1,12 +1,15 @@
-import pymysql   
+import pymysql
+import pymysql.cursors
 
 # Connect to the MySQL database
 connection = pymysql.connect(
     host="localhost",
     user="root",
-    password="Arriaiscute100#",
-    database="inventory_db"
+    password="Iondragonfly23!",
+    database="inventory_db",
+    cursorclass=pymysql.cursors.DictCursor 
 )
+
 
 cursor = connection.cursor()
     
@@ -46,13 +49,14 @@ class Inventory():
         self.connection = pymysql.connect(
             host="localhost",
             user="root",
-            password="Arriaiscute100#",
-            database="inventory_db"
+            password="Iondragonfly23!",
+            database="inventory_db",
+            cursorclass=pymysql.cursors.DictCursor #sets cursor to return dictionary objects
         )
         self.cursor = self.connection.cursor()
                 
     # Method to add a product
-    def add_product(self, product):
+    def add_product(self, product: Product):
         query = "INSERT INTO products(product_id, product_name, quantity, price, category) VALUES (%s,%s,%s,%s,%s)"
         self.cursor.execute(query,(product.product_id, product.product_name, product.quantity, product.price, product.category))
         self.connection.commit()
@@ -67,59 +71,49 @@ class Inventory():
         
     # Method to List all products
     def list_products(self):
-        query = "SELECT * FROM products"
+        query = "SELECT `product_id`, `product_name`, `quantity`, `price`,`category` FROM products"
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         if rows: 
             for row in rows:
-                print("Product ID: {}\nProduct Name: {}\nProduct Quantity: {}\nProduct Price: {}\nProduct Category: {} ".format(row[0],row[1],row[2],row[3],row[4]))
+                print(f'Product ID: {row["product_id"]}\nProduct Name: {row["product_name"]}\nProduct Quantity: {row["quantity"]}\nProduct Price: {row["price"]}\nProduct Category: {row["category"]} ')
         else:
             print("No products in the Inventory")
-# Method to close the connection
+    
+    #Method for Searching the Inventory
+    def search_products(self, query):
+        db_query = "SELECT * FROM products"
+        self.cursor.execute(db_query)
+        products = self.cursor.fetchall()
+        results = []
+        for product in products:
+            if ((query.lower() in product["product_name"].lower()) or(query.lower() in product["category"].lower())):
+                results.append(product)
+        if results:
+            for product in results:
+                print(f'Product ID: {product["product_id"]}\nProduct Name: {product["product_name"]}\nProduct Quantity: {product["quantity"]}\nProduct Price: {product["price"]}\nProduct Category: {product["category"]} ')
+        else:
+            print("No products matching search in the Inventory")
+
+    
+    # Method to close the connection
     def close_connection(self):
         if self.connection:
             self.cursor.close()
             self.connection.close()
             print("Database connection closed.")
-    
-    #Class for updating products
-class Update_products():
-    # You should have only ONE __init__ method
-    def __init__(self, inventory_instance):
-        # Get the connection from the inventory instance
-        self.inventory = inventory_instance
-        self.connection = self.inventory.connection
-        self.cursor = self.inventory.cursor
-        
-            
-    def update_price(self, product_id, new_price):
-        query = "UPDATE products SET price = %s WHERE product_id = %s"
-        self.cursor.execute(query, (product_id,new_price))
-        self.connection.commit()
-        print(f"Product with ID '{product_id}' price updated to '${new_price}' successfully!")
-            
-    def update_quantity(self, product_id, new_quantity):
-        query = "UPDATE products SET quantity = %s WHERE product_id = %s"
-        self.cursor.execute(query, (product_id, new_quantity))
-        self.connection.commit()
-        print(f"Product with ID '{product_id}' quantity updated to '{new_quantity}' successfully!")
-            
-        
-        
-            
 
 # Menu display
 print("""
     1. Add product
     2. Remove product
-    3. Update product
-    4. List product
+    3. List products
+    4. Search inventory
     5. Exit
 """)
 
 inventory = Inventory()
 choice = int(input("Enter your choice: "))
-updater = Update_products(inventory)
     
 if choice == 1:
     product_id = int(input("Enter product ID: "))
@@ -142,33 +136,19 @@ elif choice == 2:
     print("Product {} is removed\n".format(product_id))
     
 elif choice == 3:
-      
-    print("""
-          1. Update price
-          2. Update Quantity""")
-    
-    update_choice = int(input("Enter your choice: "))
-    
-    
-    if(update_choice == 1):
-        product_id = int(input("Enter product ID: "))
-        new_price = float(input("Enter the new price: "))
-        updater.update_price(product_id, new_price)
-        
-    elif (update_choice == 2):
-        product_id = int(input("Enter product ID: "))
-        new_quantity = int(input("Enter the new quantity: "))
-        updater.update_quantity(new_quantity, product_id)
-
-    
-    
-elif choice == 4:
     print("Listing products....")
     
     inventory.list_products()
 
+elif choice == 4:
+    search = input("Enter search: ")
+    inventory.search_products(search)
+
+
 elif choice == 5:
     print("Exiting program...")
-
+'''elif choice == 4:
+    print("Exiting program...")
+'''
 # Don't forget to close the connection when done
 inventory.close_connection()
