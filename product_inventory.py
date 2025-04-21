@@ -1,5 +1,8 @@
 import pymysql
 from schemas import sqlpass, inventory_name
+from update import Update_products
+from search import Search_Products
+
 
 # Create a product constructor
 class Product():
@@ -61,3 +64,7 @@ class Inventory():
             self.cursor.close()
             self.connection.close()
             print("Database connection closed.")
+
+inventory =Inventory()
+updater = Update_products(inventory)
+searcher = Search_Products(inventory) 
