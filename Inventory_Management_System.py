@@ -1,13 +1,15 @@
 import pymysql   
-from product_inventory import Inventory, Product
+from product_inventory import Inventory, Product, inventory, updater, searcher
 from schemas import *
 from update import Update_products
 from search import Search_Products
 from input_valid import *
 from tk import *
 
+
 DatabaseSetup()
-MainWindow()
+MainWindow() 
+
 # Menu display
 print("""
     1. Add Product
@@ -18,11 +20,10 @@ print("""
     6. Exit
 """)
 
-inventory =Inventory()
+
 choice = get_integer_type("Enter a choice: ")
-updater = Update_products(inventory)
-searcher = Search_Products(inventory)       
-            
+      
+    
     
 while (choice != 6):
     if choice == 1:
