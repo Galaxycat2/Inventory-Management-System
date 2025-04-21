@@ -52,11 +52,15 @@ class Inventory():
         query = "SELECT * FROM products"
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
+        result = []
         if rows: 
             for row in rows:
+                result.append(f"Product ID: {row[0]}\nProduct Name: {row[1]}\nProduct Quantity: {row[2]}\nProduct Price: {row[3]}\nProduct Category: {row[4]} ")
                 print("Product ID: {}\nProduct Name: {}\nProduct Quantity: {}\nProduct Price: {}\nProduct Category: {} ".format(row[0],row[1],row[2],row[3],row[4]))
         else:
+            result.append("No products in the Inventory")
             print("No products in the Inventory")
+        return result
                      
 # Method to close the connection
     def close_connection(self):
