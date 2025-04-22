@@ -1,8 +1,8 @@
 import pymysql   
-from product_inventory import Inventory, Product, inventory, updater, searcher
+from product_inventory import Inventory, Product, inventory
 from schemas import *
-from update import Update_products
-from search import Search_Products
+from update import Update_products, updater
+from search import Search_Products, searcher
 from input_valid import *
 from tk import *
 

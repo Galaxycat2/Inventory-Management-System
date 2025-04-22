@@ -1,4 +1,5 @@
-import schemas, product_inventory
+import schemas
+from product_inventory import *
 from tkinter import ttk, font
 from tkinter import *
 import tkinter as tk
@@ -60,6 +61,20 @@ class Search_Products():
             print("No products matching search in the Inventory")
             results.append(["No products matching search in the Inventory"])
         return results
+    
+        #Method for Searching the Inventory by product ID and returning a product
+    def get_product_by_ID(self, product_id):
+        db_query = "SELECT * FROM products WHERE product_id = %s"
+        search_param = product_id
+        self.cursor.execute(db_query, (search_param))
+        products = self.cursor.fetchone()
+        
+        if products:
+            result_product = Product(products[0], products[1], products[2], products[3], products[4])
+            return result_product
+        else:
+            return (f"Error: No Product with ID({product_id}) found.")
+
             
             
     #Method for Searching the Inventory by product category
@@ -85,3 +100,5 @@ class Search_Products():
             print("No products matching search in the Inventory")
             results.append(["No products matching search in the Inventory"])
         return results
+    
+searcher = Search_Products(inventory) 

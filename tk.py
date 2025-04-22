@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter import ttk, font
-from product_inventory import Product, Inventory, inventory, updater, searcher
-from search import Search_Products
+from product_inventory import Product, Inventory, inventory
+from search import Search_Products, searcher
+from update import Update_products, updater
 from schemas import inventory_name
 import tkinter as tk
 
@@ -35,10 +36,10 @@ def MainWindow():
     search_inventory_button = ttk.Button(mainframe, width=7, text="Search", command=SearchWindow)
     search_inventory_button.grid(column=3, row=3, sticky=(W, E))
 
-    add_item_button = ttk.Button(mainframe, width=7, text="Add Item")
+    add_item_button = ttk.Button(mainframe, width=7, text="Add Item", command=AddItemWindow)
     add_item_button.grid(column=4, row=3, sticky=(W, E))
 
-    remove_item_button = ttk.Button(mainframe, width=7, text="Update item")
+    remove_item_button = ttk.Button(mainframe, width=7, text="Update item", command=FindItemToUpdate)
     remove_item_button.grid(column=5, row=3, sticky=(W, E))
 
 def SearchWindow():
@@ -71,9 +72,9 @@ def ListProductsWindow():
     listProductsFrame = ttk.Frame(root, padding="3 3 12 12")
     listProductsFrame.grid(column=0, row=0, sticky=(N, W, E, S))
     listProductsFrame.columnconfigure([1,2,3,4,5], weight=1)
-
+    listProductsFrame.rowconfigure([1,2,3,4], weight=1)
     backButton = ttk.Button(listProductsFrame, text="Back", command=MainWindow)
-    backButton.grid(row=1,column=0)
+    backButton.grid(row=1,column=1)
 
     listView_title = ttk.Label(listProductsFrame, text=f'View All: {inventory_name}', font=titleFont)
     listView_title.grid(column=2, row=1, columnspan=3)
@@ -92,7 +93,142 @@ def ListProductsWindow():
         else:
             colcnt += 1
 
+def AddItemWindow():
+    root.children.clear()
+    AddItemFrame = ttk.Frame(root, padding="3 3 12 12")
+    AddItemFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+    AddItemFrame.columnconfigure([1,4], weight=1)
+    AddItemFrame.columnconfigure([2,3], weight=3)
+    AddItemFrame.rowconfigure([1,2,3,4], weight=1)
+    backButton = ttk.Button(AddItemFrame, text="Back", command=MainWindow)
+    backButton.grid(row=1,column=1)
+    Add_Item_title = ttk.Label(AddItemFrame, text="Add Products", font=titleFont)
+    Add_Item_title.grid(row=1, column=2, columnspan=2)
+    add_item_form = tk.Frame(AddItemFrame)
+    add_item_form.grid(column=2, row=2, rowspan=3, sticky="new")
+    item_name_label = ttk.Label(add_item_form, text="Product Name:")
+    item_name_label.grid(row=1, column=1, pady=5)
+    item_name = StringVar()
+    item_name_entry = ttk.Entry(add_item_form, textvariable=item_name)
+    item_name_entry.grid(row=1, column=2, pady=5)
+    item_ID_label = ttk.Label(add_item_form, text="Product ID:")
+    item_ID_label.grid(row=2, column=1, pady=5)
+    item_ID = StringVar()
+    item_ID_entry = ttk.Entry(add_item_form, textvariable=item_ID)
+    item_ID_entry.grid(row=2, column=2, pady=5)
+    item_Quant_label = ttk.Label(add_item_form, text="Product Quantity:")
+    item_Quant_label.grid(row=3, column=1, pady=5)
+    item_quant = StringVar()
+    item_quant_entry = ttk.Entry(add_item_form, textvariable=item_quant)
+    item_quant_entry.grid(row=3, column=2, pady=5)
+    item_price_label = ttk.Label(add_item_form, text="Product Price ($):")
+    item_price_label.grid(row=4, column=1, pady=5)
+    item_price = StringVar()
+    item_price_entry = ttk.Entry(add_item_form, textvariable=item_price)
+    item_price_entry.grid(row=4, column=2, pady=5)
+    item_category_label = ttk.Label(add_item_form, text="Product Category:")
+    item_category_label.grid(row=5, column=1, pady=5)
+    item_category = StringVar()
+    item_category_entry = ttk.Entry(add_item_form, textvariable=item_category)
+    item_category_entry.grid(row=5, column=2, pady=5)
+    resultField = ttk.Frame(AddItemFrame)
+    resultField.grid(column=3, row=2, rowspan=2)
+    add_button = ttk.Button(add_item_form, text="Add Product", command= lambda: Add_item(item_ID.get(), item_name.get(), item_quant.get(), item_price.get(), item_category.get(), resultField))
+    add_button.grid(row=6, pady=30)
 
+def FindItemToUpdate():
+    root.children.clear()
+    UpdateItemFrame = ttk.Frame(root, padding="3 3 12 12")
+    UpdateItemFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+    UpdateItemFrame.columnconfigure([1,4], weight=1)
+    UpdateItemFrame.columnconfigure([2,3], weight=3)
+    UpdateItemFrame.rowconfigure([1,2,3,4], weight=1)
+    backButton = ttk.Button(UpdateItemFrame, text="Back", command=MainWindow)
+    backButton.grid(row=1,column=1)
+    Update_Item_title = ttk.Label(UpdateItemFrame, text="Update Products", font=titleFont)
+    Update_Item_title.grid(row=1, column=2, columnspan=2)
+    productIDLabel = ttk.Label(UpdateItemFrame, text="Enter ID for Product to Update:")
+    productIDLabel.grid(row=2, column=2, sticky="ew")
+    productID = StringVar()
+    productIDEntry = ttk.Entry(UpdateItemFrame, textvariable=productID)
+    productIDEntry.grid(row=2, column=3)
+    ErrorFrame = ttk.Frame(UpdateItemFrame)
+    ErrorFrame.grid(row=4, column=2, columnspan=2)
+    updateButton = ttk.Button(UpdateItemFrame, text="Update Product", command= lambda: UpdateProductWindow(productID.get(), ErrorFrame))
+    updateButton.grid(row=3, column=2, pady=10)
+    deleteButton = ttk.Button(UpdateItemFrame, text="Delete Item", command= lambda: DeleteProduct(productID.get(), ErrorFrame))
+    deleteButton.grid(row=3, column=3, pady=10)
+
+
+
+def UpdateProductWindow(productID, ErrorFrame):
+    product = searcher.get_product_by_ID(productID)
+    if type(product) == str:
+        errorLabel = ttk.Label(ErrorFrame, text=product)
+        errorLabel.grid(sticky="ew")
+        return
+    else:
+        root.children.clear()
+        UpdateItemFrame = ttk.Frame(root, padding="3 3 12 12")
+        UpdateItemFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+        UpdateItemFrame.columnconfigure([1,4], weight=1)
+        UpdateItemFrame.columnconfigure([2,3], weight=3)
+        UpdateItemFrame.rowconfigure([1,2,3,4], weight=1)
+        backButton = ttk.Button(UpdateItemFrame, text="Back", command=FindItemToUpdate)
+        backButton.grid(row=1,column=1)
+        Add_Item_title = ttk.Label(UpdateItemFrame, text=f"Update Product ID: {product.product_id}", font=titleFont)
+        Add_Item_title.grid(row=1, column=2, columnspan=2)
+        add_item_form = tk.Frame(UpdateItemFrame)
+        add_item_form.grid(column=2, row=2, rowspan=3, sticky="new")
+        item_ID_label = ttk.Label(add_item_form, text=f"Product ID: {product.product_id}")
+        item_ID_label.grid(row=1, column=1, pady=5)
+        item_name_label = ttk.Label(add_item_form, text="Product Name:")
+        item_name_label.grid(row=2, column=1, pady=5)
+        item_name = StringVar(value=product.product_name)
+        item_name_entry = ttk.Entry(add_item_form, textvariable=item_name)
+        item_name_entry.grid(row=2, column=2, pady=5)
+        item_Quant_label = ttk.Label(add_item_form, text="Product Quantity:")
+        item_Quant_label.grid(row=3, column=1, pady=5)
+        item_quant = StringVar(value=product.quantity)
+        item_quant_entry = ttk.Entry(add_item_form, textvariable=item_quant)
+        item_quant_entry.grid(row=3, column=2, pady=5)
+        item_price_label = ttk.Label(add_item_form, text="Product Price ($):")
+        item_price_label.grid(row=4, column=1, pady=5)
+        item_price = StringVar(value=product.price)
+        item_price_entry = ttk.Entry(add_item_form, textvariable=item_price)
+        item_price_entry.grid(row=4, column=2, pady=5)
+        item_category_label = ttk.Label(add_item_form, text="Product Category:")
+        item_category_label.grid(row=5, column=1, pady=5)
+        item_category = StringVar(value=product.category)
+        item_category_entry = ttk.Entry(add_item_form, textvariable=item_category)
+        item_category_entry.grid(row=5, column=2, pady=5)
+        resultField = ttk.Frame(UpdateItemFrame)
+        resultField.grid(column=3, row=2, rowspan=2)
+        update_button = ttk.Button(add_item_form, text="Update Product", command= lambda: Update_item(product.product_id, item_name.get(), item_quant.get(), item_price.get(), item_category.get(), resultField))
+        update_button.grid(row=6, column=1, pady=30)
+        deleteButton = ttk.Button(add_item_form, text="Delete Item", command= lambda: DeleteProduct(product.product_id, resultField))
+        deleteButton.grid(row=6, column=2, pady=30)
+
+
+def Add_item(id, name, quant, price, category, frame):
+    frame.children.clear()
+    new_product = Product(id, name, quant, price, category)
+    result = inventory.add_product(new_product)
+    resultLabel = ttk.Label(frame, text=result, wraplength=200, font=subTitleFont)
+    resultLabel.grid(column=0, row=0)
+
+def DeleteProduct(id, frame):
+    frame.children.clear()
+    result = inventory.remove_product(id)
+    resultLabel = ttk.Label(frame, text=result, wraplength=200, font=subTitleFont)
+    resultLabel.grid(column=0, row=0)
+
+def Update_item(id, name, quant, price, category, frame):
+    frame.children.clear()
+    new_product = Product(id, name, quant, price, category)
+    result = updater.update_product(new_product)
+    resultLabel = ttk.Label(frame, text=result, wraplength=200, font=subTitleFont)
+    resultLabel.grid(column=0, row=0)
 
 
 def searchNameandListResults(window,query):

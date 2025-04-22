@@ -1,4 +1,4 @@
-import product_inventory
+from product_inventory import *
 from schemas import cursor
 
 #Class for updating products
@@ -23,6 +23,12 @@ class Update_products():
         self.connection.commit()
         print(f"Product with ID '{product_id}' quantity updated to '{new_quantity}' successfully!")
 
+    def update_product(self, product):
+        query = "UPDATE products SET product_name = %s, price = %s, quantity = %s, category = %s WHERE product_id = %s"
+        self.cursor.execute(query, (product.product_name, product.price, product.quantity, product.category, product.product_id))
+        self.connection.commit()
+        return(f"Product with ID: '{product.product_id}' updated successfully!")
+
     def addAttribute(self, product_id, attribute, attribute_value):
         if (attribute_value is not int):
             query = f'INSERT INTO product_attributes (product_id, attribute, attribute_string) VALUES ("{product_id}","{attribute}","{attribute_value}");'
@@ -32,3 +38,5 @@ class Update_products():
             query = f'INSERT INTO product_attributes (product_id, attribute, attribute_quantity) VALUES ("{product_id}","{attribute}","{attribute_value}");'
             self.cursor.execute(query)
             self.connection.commit()
+
+updater = Update_products(inventory)

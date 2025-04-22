@@ -1,7 +1,6 @@
 import pymysql
 from schemas import sqlpass, inventory_name
-from update import Update_products
-from search import Search_Products
+
 
 
 # Create a product constructor
@@ -37,6 +36,7 @@ class Inventory():
         self.cursor.execute(query,(product.product_id, product.product_name, product.quantity, product.price, product.category))
         self.connection.commit()
         print(f"Product '{product.product_name}' added successfully!")
+        return (f"Product '{product.product_name}' added successfully!")
         
            
             
@@ -46,6 +46,7 @@ class Inventory():
         self.cursor.execute(query, (product_id,))
         self.connection.commit()
         print(f"Product with ID '{product_id}' deleted successfully!")
+        return (f"Product with ID '{product_id}' deleted successfully!")
         
     # Method to List all products
     def list_products(self):
@@ -70,5 +71,4 @@ class Inventory():
             print("Database connection closed.")
 
 inventory =Inventory()
-updater = Update_products(inventory)
-searcher = Search_Products(inventory) 
+
