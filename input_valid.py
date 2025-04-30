@@ -15,14 +15,16 @@ def get_string_type(prompt):
             return user_input
        
             
-            
+# Check if valid integer type            
 def get_integer_type(prompt):
     
     while True:
         try:
             return int(input(prompt))
         except:
-            print("Invalid input! Please enter an integer value.")    
+            print("Invalid input! Please enter an integer value.")  
+            
+# Check if valid float type  
 
 def get_float_type(prompt):
     
