@@ -1,16 +1,21 @@
-import pymysql   
-from product_inventory import Inventory, Product, inventory
+#Standard Library Imports
+import pymysql
+from tk import *
+
+#Class Files
+from product_inventory import Inventory, Product
 from schemas import *
 from update import Update_products, updater
 from search import Search_Products, searcher
 from input_valid import *
-from tk import *
 
 
 DatabaseSetup()
 MainWindow() 
 
-# Menu display
+inventory = Inventory()     # Creates an Inventory object
+
+# Menu display in Control Window
 print("""
     1. Add Product
     2. Remove Product
@@ -20,12 +25,13 @@ print("""
     6. Exit
 """)
 
-
-choice = get_integer_type("Enter a choice: ")
+choice = get_integer_type("Enter a choice: ")   # Gets the users input
       
     
-    
+#Command Window Prompts and User actions
 while (choice != 6):
+
+     # Option 1: Add a new product
     if choice == 1:
         result = None
         
@@ -59,6 +65,7 @@ while (choice != 6):
         inventory.add_product(new_product)
         print("Product {} is added".format(product_id))
     
+    # Option 2: Remove an existing product
     elif choice == 2:
         product_id = get_integer_type("Enter product ID: ")
         
@@ -66,8 +73,10 @@ while (choice != 6):
         inventory.remove_product(product_id)
         print("Product {} is removed\n".format(product_id))
         
+     # Option 3: Update Product
     elif choice == 3:
         
+        #Display Update Menu
         print("""
             1. Update price
             2. Update Quantity
@@ -96,30 +105,40 @@ while (choice != 6):
             except:
                 updater.addAttribute(product_id, attribute, attribute_value)
   
+    #Option 4: List Products
     elif choice == 4:
         print("Listing products....")
         
         inventory.list_products()
         
+    #Option 5: Search Inventory
     elif choice == 5:
+
+        #Display Search Menu
         print("""
             1. Search by product name
             2. Search by product ID
             3. Search by product category""")
+        
+        #Get User Input
         search_choice = int(input("How would you like to search for an item?"))
         
+        #Search by name
         if(search_choice == 1):
             product_name = get_string_type("Enter product name: ")
             searcher.search_products_by_name(product_name)
         
+        #Search by ID
         elif(search_choice == 2):
             product_id = get_integer_type("Enter product ID: ")
             searcher.search_products_by_ID(product_id)
             
+        #Search by category
         elif(search_choice == 3):
             category = get_string_type("Enter product category: ")
             searcher.search_products_by_category(category)
     
+    # Option 6: Exit the program
     elif choice == 6:
         print("Exiting program...")
 
