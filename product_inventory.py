@@ -1,5 +1,5 @@
 import pymysql
-from schemas import sqlpass, inventory_name
+from schemas import DatabaseSetup
 
 
 
@@ -12,20 +12,16 @@ class Product():
         self.price = price
         self.category = category
     
+    # Returns a formated string when printing object
     def __str__(self):
             return "Product ID: {}\nProduct Name: {}\nQuantity: {}\nPrice: {}\nCategory: {}\n".format(
                 self.product_id, self.product_name, self.quantity, self.price, self.category)
         
-        
+# Class to handle inventory operations like adding/removing/listing   
 class Inventory():
     def __init__(self):
         # Initialize database connection in the constructor
-        self.connection = pymysql.connect(
-            host="localhost",
-            user="root",
-            password=sqlpass,
-            database="inventory_db"
-        )
+        self.connection = DatabaseSetup()
         self.cursor = self.connection.cursor()
                 
     # Method to add a product

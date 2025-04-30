@@ -1,5 +1,4 @@
 from product_inventory import *
-from schemas import cursor
 
 #Class for updating products
 class Update_products():

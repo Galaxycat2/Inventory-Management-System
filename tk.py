@@ -58,6 +58,7 @@ def SearchWindow():
     searchField_query = StringVar()
     searchField = ttk.Entry(searchFrame, textvariable=searchField_query).grid(column=2,row=2, columnspan=3, sticky="we")
     resultField = tk.Canvas(searchFrame)
+    resultField.children.clear()
     resultField.grid(column=2, columnspan=3, row=4, rowspan=2, sticky=(N, E, W, S))
     resultField.columnconfigure([0], weight=1)
     search_by_id_button = ttk.Button(searchFrame, width=7, text="Search By ID", command=lambda: searchIDandListResults(resultField, searchField_query.get()))
@@ -224,22 +225,38 @@ def DeleteProduct(id, frame):
     resultLabel.grid(column=0, row=0)
 
 def Update_item(id, name, quant, price, category, frame):
-    frame.children.clear()
-    new_product = Product(id, name, quant, price, category)
-    result = updater.update_product(new_product)
-    resultLabel = ttk.Label(frame, text=result, wraplength=200, font=subTitleFont)
-    resultLabel.grid(column=0, row=0)
+    try: 
+        int(id)
+        float(price)
+        int(quant)
+        frame.children.clear()
+        new_product = Product(id, name, quant, price, category)
+        result = updater.update_product(new_product)
+        resultLabel = ttk.Label(frame, text=result, wraplength=200, font=subTitleFont)
+        resultLabel.grid(column=0, row=0)
+    except:
+        ErrorLabel = ttk.Label(frame, text="Error: Invalid inputs, Price and Quantity should be a whole number, Price should be a value with two decimal places.", wraplength=200, font=subTitleFont)
+        ErrorLabel.grid(column=0, row=0)
 
 
 def searchNameandListResults(window,query):
+    window.children.clear()
     results = searcher.search_products_by_name(query)
     ListResults(window, results)
 
 def searchIDandListResults(window,query):
-    results = searcher.search_products_by_ID(query)
-    ListResults(window, results)
+    try:
+        int(query)
+        window.children.clear()
+        results = searcher.search_products_by_ID(query)
+        ListResults(window, results)
+    except:
+        resultLabel = ttk.Label(window, text=f"Error: Invalid ID", wraplength=200, font=subTitleFont)
+        resultLabel.grid(column=0, row=0)
+
 
 def searchCategoryandListResults(window,query):
+    window.children.clear()
     results = searcher.search_products_by_category(query)
     ListResults(window, results)
 

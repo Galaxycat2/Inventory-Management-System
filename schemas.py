@@ -1,19 +1,21 @@
 import pymysql
 
-sqlpass = "Iondragonfly23!"
-inventory_name = "inventory_db"
-# Connect to the MySQL database
-connection = pymysql.connect(
-    host="localhost",
-    user="root",
-    password=sqlpass,
-    database=inventory_name
-)
-
-cursor = connection.cursor()
+sqlpass = "Iondragonfly23!"  #Database password
+inventory_name = "inventory_db" #Database name
+   
 
 def DatabaseSetup():
-        
+    
+    # Connect to the MySQL database
+    connection = pymysql.connect(
+        host="localhost",               # Host where the database is located
+        user="root",                    # Sets database username
+        password=sqlpass,               # Sets password for the database
+        database=inventory_name         # Sets Name of the database to connect to
+    )
+
+    cursor = connection.cursor()        # Creates a cursor object to execute SQL commands
+
     # Create the 'products' table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS products (
@@ -25,6 +27,7 @@ def DatabaseSetup():
         )
     """)
 
+    #Creates Miscellaneous Attribute table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS product_attributes (
         product_id INT,
@@ -35,7 +38,4 @@ def DatabaseSetup():
         )
     """)
 
-    # Close the connection
-    connection.close()
-
-# print("Table 'products' created successfully!")
+    return connection
